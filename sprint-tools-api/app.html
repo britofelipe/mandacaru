@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imobiliária</title>
+    <script src="https://unpkg.com/vue@2.7.7/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+
+    <div id="app">
+        <div>
+            id: <input type="text" name="" id="" v-model="id" /><br /><br />
+            name: <input type="text" name="" id="" v-model="name" /><br /><br />
+            address: <input type="text" name="" id="" v-model="address" /><br /><br />
+            terrain: <input type="number" name="" id="" v-model="terrain" /><br /><br />
+            construction: <input type="number" name="" id="" v-model="construction" /><br /><br />
+            rooms: <input type="number" name="" id="" v-model="rooms" /><br /><br />
+            bathrooms: <input type="number" name="" id="" v-model="bathrooms" /><br /><br />
+            garage: <input type="number" name="" id="" v-model="garage" /><br /><br />
+            price: <input type="price" name="" id="" v-model="price" /><br /><br />
+            status: <input type="boolean" name="" id="" v-model="status" /><br /><br />
+            purpose: <input type="text" name="" id="" v-model="purpose" /><br /><br />
+            time: <input type="text" name="" id="" v-model="time" /><br /><br />
+            owner: <input type="text" name="" id="" v-model="owner" /><br /><br />
+
+            <button @click="fetchProducts">Fetch products</button><br /><br />
+            <button @click="fetchProductById">Fetch Product By Id</button><br /><br />
+            <button @click="fetchProductByName">Fetch Product By name</button><br /><br />
+            <button @click="postProduct">Post Product</button><br /><br />
+            <button @click="putProduct">Put Product</button><br /><br />
+            <button @click="deleteProductById">Delete Product</button><br /><br />
+
+            <p>{{ product }}</p>
+
+            <ul>
+                <li v-for="product in products" :key="product.id">
+                    <h4>{{ product.id }}</h4>
+                    <p>{{ product.name }}</p>
+                    <p>{{ product.address }}</p>
+                    <p>{{ product.terrain }}</p>
+                    <p>{{ product.construcion }}</p>
+                    <p>{{ product.rooms }}</p>
+                    <p>{{ product.bathrooms }}</p>
+                    <p>{{ product.garage }}</p>
+                    <p>{{ product.price }}</p>
+                    <p>{{ product.status }}</p>
+                    <p>{{ product.purpose }}</p>
+                    <p>{{ product.time }}</p>
+                    <p>{{ product.owner }}</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        var app = new Vue({
+            el: "#app",
+            data: {
+                id: 0,
+                name: "",
+                address: "",
+                terrain: "",
+                construction: "",
+                rooms: "",
+                bathrooms: "",
+                garage: "",
+                price: "",
+                status: "",
+                purpose: "",
+                time: "",
+                owner: "",
+                product: {},
+                products: [],
+                baseURI: "http://localhost:8080/api/products",
+            },
+            methods: {
+                fetchProducts: function () {
+                    axios.get(this.baseURI).then((result) => {
+                        this.products = result.data;
+                    });
+                },
+                fetchProductById: function () {
+                    axios
+                        .get(this.baseURI + "/" + this.id)
+                        .then((result) => {
+                            this.product = result.data;
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                },
+                fetchProductByName: function () {
+                    axios
+                        .get(this.baseURI + "/search?name=" + this.name)
+                        .then((result) => {
+                            this.product = result.data;
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                },
+                postProduct: function () {
+                    let obj = {
+                        name: this.name,
+                        address: this.address,
+                        terrain: this.terrain,
+                        construction: this.construction,
+                        rooms: this.rooms,
+                        bathrooms: this.bathrooms,
+                        garage: this.garage,
+                        price: parseFloat(this.price),
+                        status: this.status,
+                        purpose: this.purpose,
+                        time: this.time,
+                        owner: this.owner,
+                    };
+
+                    axios.post(this.baseURI, obj).then((result) => {
+                        this.product = result.data;
+                    });
+                },
+                putProduct: function () {
+                    let obj = {
+                        name: this.name,
+                        address: this.address,
+                        terrain: this.terrain,
+                        construction: this.construction,
+                        rooms: this.rooms,
+                        bathrooms: this.bathrooms,
+                        garage: this.garage,
+                        price: parseFloat(this.price),
+                        status: this.status,
+                        purpose: this.purpose,
+                        time: this.time,
+                        owner: this.owner,
+                    };
+
+                    axios.put(this.baseURI + "/" + this.id, obj).then((result) => {
+                        this.product = result.data;
+                    });
+                },
+                deleteProductById: function () {
+                    axios.delete(this.baseURI + "/" + this.id).then((result) => {
+                        console.log(result.status);
+                    });
+                },
+            },
+        });
+    </script>
+
+</body>
+
+</html>
